@@ -31,3 +31,4 @@ C:\Users\HP 245 G8\Documents\AplicacionesMoviles\PROGRAMAS\PROG1\src\ProgramasFa
 C:\Users\HP 245 G8\Documents\AplicacionesMoviles\PROGRAMAS\PROG1\src\ProgramasFacpya.Api\obj\Debug\net9.0\ProgramasFacpya.Api.pdb
 C:\Users\HP 245 G8\Documents\AplicacionesMoviles\PROGRAMAS\PROG1\src\ProgramasFacpya.Api\obj\Debug\net9.0\ProgramasFacpya.Api.genruntimeconfig.cache
 C:\Users\HP 245 G8\Documents\AplicacionesMoviles\PROGRAMAS\PROG1\src\ProgramasFacpya.Api\obj\Debug\net9.0\ref\ProgramasFacpya.Api.dll
+C:\Users\HP 245 G8\Documents\AplicacionesMoviles\PROGRAMAS\PROG1\src\ProgramasFacpya.Api\obj\Debug\net9.0\ProgramasFacpya.Api.sourcelink.json
