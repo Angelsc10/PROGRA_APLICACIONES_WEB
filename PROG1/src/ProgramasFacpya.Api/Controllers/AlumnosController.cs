@@ -1,14 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
-using ProgramasFacpya.Api.Servicios;
+using ProgramasFacpya.Api.Features.Alumnos;
 using ProgramasFacpya.Api.Models;
+using ProgramasFacpya.Api.Servicios;
 
 namespace ProgramasFacpya.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class Alumnos : ControllerBase
+public class AlumnosController(AlumnoService service) : ControllerBase
 {
+    private readonly AlumnoService _service = service;
     
+    [HttpPost("ObtenerTodos")]
+    public async Task<IActionResult> ObtenerTodos()
+    {
+        return Ok(await _service.ObtenerTodos());
+    }
+
     [HttpPost("RegistroAlumno")]
     public IActionResult RegistroAlumno([FromBody] ALUMNO Alumno)
     {

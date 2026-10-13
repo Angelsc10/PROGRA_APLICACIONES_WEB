@@ -158,4 +158,5 @@ public class OperadorController : ControllerBase
         int mayor = Math.Max(Num1, Math.Max(Num2, Num3));
         return Ok($"El número mayor es: {mayor}");
     }
+    
 }
