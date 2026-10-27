@@ -19,13 +19,77 @@ public class AlumnoService(DbContext db, IValidator<AlumnoDTO> validator)
                             a.APaterno,
                             a.AMaterno,
                             a.IdCarrera,
-                            a.FecRegistro,
+                            a.FechaRegistro,
                             c.Descripcion AS Carrera
-                    FROM Alumnos a
+                    FROM ALUMNO a
                     INNER JOIN CARRERA c ON a.IdCarrera = c.IdCarrera
                     ORDER BY a.APaterno, a.AMaterno, a.Nombre";
         
         var alumnos = await connection.QueryAsync<Alumno>(sql);
         return ApiResponse<IEnumerable<Alumno>>.Ok(alumnos);
+    }
+    public async Task<ApiResponse<Alumno>> ObtenerPorId(int idAlumno)
+    {
+        using var connection = _db.CreateConnection();
+        var sql = @"SELECT a.IdAlumno, a.Nombre, a.APaterno, a.AMaterno, a.IdCarrera,
+                        a.FechaRegistro, c.Descripcion AS Carrera
+                    FROM ALUMNO a
+                    INNER JOIN CARRERA c ON a.IdCarrera = c.IdCarrera
+                    WHERE a.IdAlumno = @IdAlumno";
+        
+        var alumno = await connection.QueryFirstOrDefaultAsync<Alumno>(sql, new { IdAlumno = idAlumno });
+
+        if (alumno == null)
+        {
+            return ApiResponse<Alumno>.Error("Alumno no encontrado");
+        }
+        return ApiResponse<Alumno>.Ok(alumno);
+    }
+
+    public async Task<ApiResponse<int>> Crear(AlumnoDTO dto)
+    {
+        var validacion = await _validator.ValidateAsync(dto);
+        if (!validacion.IsValid)
+            return ApiResponse<int>.Error(validacion.Errors.First().ErrorMessage);
+        
+        using var connection = _db.CreateConnection();
+        if (!await ExisteCarrera(connection, dto.IdCarrera))
+            return ApiResponse<int>.Error("La carrera no existe");
+        
+        var sql = @"INSERT INTO ALUMNO (Nombre, APaterno, AMaterno, IdCarrera)
+                    VALUES (@Nombre, @APaterno, @AMaterno, @IdCarrera);
+                    SELECT CAST(SCOPE_IDENTITY() AS INT)";
+
+        var idAlumno = await connection.ExecuteScalarAsync<int>(sql, new { dto.Nombre, dto.APaterno, dto.AMaterno, dto.IdCarrera });
+            return ApiResponse<int>.Ok(idAlumno, "Alumno registrado");
+    }
+
+    public async Task<ApiResponse<string>> Actualizar(int idAlumno, AlumnoDTO dto)
+    {
+        var validacion = await _validator.ValidateAsync(dto);
+        if(!validacion.IsValid)
+            return ApiResponse<string>.Error(validacion.Errors.First().ErrorMessage);
+
+        using var connection = _db.CreateConnection();
+        if(!await ExisteCarrera(connection, dto.IdCarrera))
+            return ApiResponse<string>.Error("La carrera no existe");
+
+        var sql = @"UPDATE ALUMNO SET Nombre = @Nombre, APaterno = @APaterno, AMaterno = @AMaterno, IdCarrera = @IdCarrera
+                    WHERE IdAlumno = @IdAlumno";
+
+        var rows = await connection.ExecuteAsync(sql, new { idAlumno = idAlumno, dto.Nombre, dto.APaterno, dto.AMaterno, dto.IdCarrera });
+
+        if (rows == 0) return ApiResponse<string>.Error("Alumno no encontrado");
+
+        return ApiResponse<string>.Ok("Alumno actualizado");
+    } 
+
+    private static async Task<bool> ExisteCarrera(System.Data.IDbConnection connection, byte idCarrera)
+    {
+        var existe = await connection.QueryFirstOrDefaultAsync<byte?>(
+            "SELECT IdCarrera FROM CARRERA WHERE IdCarrera = @IdCarrera",
+            new { IdCarrera = idCarrera });
+            
+        return existe != null;
     }
 }
