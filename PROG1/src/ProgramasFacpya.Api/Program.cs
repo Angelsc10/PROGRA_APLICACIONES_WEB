@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationConfig();
 builder.Services.AddOpenApi();
+builder.Services.AddScoped<ProgramasFacpya.Api.Features.Alumnos.MaestroService>();
+builder.Services.AddScoped<ProgramasFacpya.Api.Features.Alumnos.CarreraService>();
 
 // Registrar DbContext (conexion a BD)
 builder.Services.AddSingleton<ProgramasFacpya.Api.Data.DbContext>();
