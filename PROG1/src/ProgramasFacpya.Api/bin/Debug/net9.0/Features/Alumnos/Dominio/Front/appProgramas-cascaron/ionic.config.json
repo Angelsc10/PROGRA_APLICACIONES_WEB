@@ -1,0 +1,7 @@
+{
+  "name": "appProgramas-cascaron",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

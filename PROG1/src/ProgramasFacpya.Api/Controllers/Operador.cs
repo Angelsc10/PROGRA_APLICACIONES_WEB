@@ -158,5 +158,87 @@ public class OperadorController : ControllerBase
         int mayor = Math.Max(Num1, Math.Max(Num2, Num3));
         return Ok($"El número mayor es: {mayor}");
     }
-    
+
+    // Recibe 5 valores y dice cuántos pares e impares hay, usando una función
+    [HttpGet("ContarParesImpares/{Num1:int}/{Num2:int}/{Num3:int}/{Num4:int}/{Num5:int}")]
+    public IActionResult ContarParesImpares(int Num1, int Num2, int Num3, int Num4, int Num5)
+    {
+        int[] numeros = { Num1, Num2, Num3, Num4, Num5 };
+
+        var (pares, impares) = ContarParesEImpares(numeros);
+
+        return Ok(new { Numeros = numeros, Pares = pares, Impares = impares });
+    }
+
+    // Función: devuelve la cantidad de pares e impares de un arreglo
+    private static (int Pares, int Impares) ContarParesEImpares(int[] numeros)
+    {
+        int pares = 0;
+
+        foreach (int numero in numeros)
+        {
+            if (EsPar(numero))
+            {
+                pares++;
+            }
+        }
+
+        return (pares, numeros.Length - pares);
+    }
+
+    // Función: indica si un número es par
+    private static bool EsPar(int numero) => numero % 2 == 0;
+
+    // Recibe 7 valores y dice cuáles son mayores a 0 y cuáles menores a 0, usando funciones
+    [HttpGet("ClasificarNumeros/{Num1:int}/{Num2:int}/{Num3:int}/{Num4:int}/{Num5:int}/{Num6:int}/{Num7:int}")]
+    public IActionResult ClasificarNumeros(int Num1, int Num2, int Num3, int Num4, int Num5, int Num6, int Num7)
+    {
+    int[] numeros = { Num1, Num2, Num3, Num4, Num5, Num6, Num7 };
+
+    var mayoresACero = ObtenerMayoresACero(numeros);
+    var menoresACero = ObtenerMenoresACero(numeros);
+    var iguales = numeros.Length - mayoresACero.Count - menoresACero.Count;
+
+    return Ok(new
+    {
+        Numeros = numeros,
+        MayoresACero = mayoresACero,
+        CantidadMayores = mayoresACero.Count,
+        MenoresACero = menoresACero,
+        CantidadMenores = menoresACero.Count,
+        CantidadIgualesACero = iguales
+    });
+    }
+
+    // Función: devuelve los números mayores a 0
+    private static List<int> ObtenerMayoresACero(int[] numeros)
+    {
+    var resultado = new List<int>();
+
+    foreach (int numero in numeros)
+    {
+        if (numero > 0)
+        {
+            resultado.Add(numero);
+        }
+    }
+
+    return resultado;
+    }
+
+    // Función: devuelve los números menores a 0
+    private static List<int> ObtenerMenoresACero(int[] numeros)
+    {
+    var resultado = new List<int>();
+
+    foreach (int numero in numeros)
+    {
+        if (numero < 0)
+        {
+            resultado.Add(numero);
+        }
+    }
+
+    return resultado;
+    }
 }
